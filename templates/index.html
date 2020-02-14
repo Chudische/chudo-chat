@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block script %} 
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}
+
+{% block title %}
+main
+{% endblock %}
+
+{% block main %}
+
+<!-- Create channel modal -->
+<div class="modal fade" id="createChannelModal" tabindex="-1" role="dialog" aria-labelledby="createChannelModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="createChannelModalTitle">Create channel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form action="/" id="createForm" method="POST">                
+                <label for="createChannel"><span class="small text-center text-muted">Enter the name of channel</span class="small text-center text-muted"></label><br>
+                    <input autocomplete="off" autofocus class="form-control" name="channel" id="createChannel" placeholder="My channel" type="text">
+                    <div class="alert alert-danger alert-fixed"></div>
+                <button type="submit" class="btn btn-primary btn-block mt-2">Create</button>            
+            </form>            
+        </div>
+        <div class="modal-footer">
+            
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>          
+        </div>
+    </div>
+    </div>
+</div>
+<div class="wrapper">
+<ul id="masseges">    
+    {% for msg in masseges %}
+    <li> 
+        <b>{{msg.name}}:</b> <span class="text-muted">({{msg.date}})</span><hr>
+        <p>{{msg.messege}}</p>
+    </li>
+    {% endfor %}
+</ul>
+</div>
+
+    <div class="fixed-input">        
+            <div class="input-group">                                            
+                <select class="custom-select " id="selectChannels">
+                    <option value="default" disabled selected>Chouse the channel</option>
+                    {% for channel in channels_list %}
+                    <option value="{{ channel }}">{{ channel }}</option>
+                    {% endfor %}
+                </select>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" id="connectButton" type="button">Connect</button>
+                    <button class="btn btn-outline-secondary" id="createButton" type="button">Create</button>
+                </div>
+            </div>
+            <div class='mb-3'>                         
+                <textarea name="inputMassege" id="inputMassege" rows="3"></textarea>
+                <br>
+                <button type="submit" id="submitButton" class="btn btn-outline-secondary btn-block">Submit</button>        
+            </div>
+    </div>  
+
+
+{% endblock %}

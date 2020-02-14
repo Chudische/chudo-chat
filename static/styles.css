@@ -1,0 +1,55 @@
+main .form-control
+{
+    /* center form controls */
+    /* display: inline-block; */
+
+    /* override Bootstrap's 100% width for form controls */
+    width: 100%;
+}
+
+main
+{
+    /* scroll horizontally as needed */
+    overflow-x: auto;
+
+    /* center contents */
+    text-align: center;
+}
+
+main img
+{
+    /* constrain images on small screens */
+    max-width: 100%;
+}
+
+ul {
+    list-style: none;
+    text-align: left;
+}
+li {
+    border: 1px solid grey;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 5px;
+}
+
+textarea {
+    min-width: 100%;
+}
+
+.alert-fixed {
+    display: none;
+}
+
+.fixed-input {
+    position: fixed;
+    bottom: 0;
+    right: 10px;
+    left: 10px;
+    margin: 10px, 15px;
+}
+
+.wrapper {  
+    display: block;  
+    height: 65vh; 
+}
