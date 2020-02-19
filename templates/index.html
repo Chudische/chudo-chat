@@ -1,7 +1,28 @@
 {% extends "layout.html" %}
 
 {% block script %} 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+<script id="chat-massege" type="text/x-handlebars-template">
+    {% raw -%}
+    <div class="massege">
+        
+        <div class="massege-title">         
+            <b>{{ nick }}:</b> <span class="small text-muted">({{ date }})</span>            
+        </div>
+        <div class="buttons">
+            <button class="btn btn-outline-secondary close-btn">Answer</button> 
+        <button class="btn btn-outline-secondary close-btn">Delete</button> 
+        </div>
+        
+        <div class="massege-body">
+            <p>{{ text }}</p>
+              
+        </div> 
+        
+    </div>
+    {%- endraw %}
+</script>
 {% endblock %}
 
 {% block title %}
@@ -36,13 +57,10 @@ main
     </div>
 </div>
 <div class="wrapper">
-<ul id="masseges">    
-    {% for msg in masseges %}
-    <li> 
-        <b>{{msg.name}}:</b> <span class="text-muted">({{msg.date}})</span><hr>
-        <p>{{msg.messege}}</p>
-    </li>
-    {% endfor %}
+<div id="new-masseges">
+
+</div>
+<ul id="masseges">  
 </ul>
 </div>
 

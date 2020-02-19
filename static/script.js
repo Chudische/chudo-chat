@@ -1,29 +1,42 @@
 
 document.addEventListener('DOMContentLoaded', () => {    
-    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     
     var user = localStorage.getItem('nickname');
 
     var channel = localStorage.getItem('channel') ? localStorage.getItem('channel') : 'default';
 
+    const template = Handlebars.compile(document.querySelector("#chat-massege").innerHTML)
+
+    function add_massege(data){
+        const massege = template(data);
+        document.querySelector("#new-masseges").innerHTML += massege;
+
+    };
     // On connect join the latest room(that user was in) or default room 
     socket.on('connect', function (){        
         let data = {room: channel, nickname: user};                   
         socket.emit('join', data);
-        $("#selectChannels").val(channel);
-        $.getJSON(`/get_masseges?channel=${channel}`, function(resp){
-            if (resp.channel == 'bad') {                 
-                    localStorage.removeItem("channel");                           
-            } else { 
-                console.log(resp);                 
-                for (msg in resp){
-                        console.log(msg);                    
-                        const li = document.createElement('li');                 
-                        li.innerHTML = `<b>${resp[msg].nick}: </b><span class="small text-muted">(${resp[msg].date})</span><p>${resp[msg].massege}</p>`;
-                        document.querySelector('#masseges').prepend(li);                
-                }
-            }
-        });
+        document.querySelector("#selectChannels").value = channel;
+        const request = new XMLHttpRequest();
+        request.open("GET", `/get_masseges?channel=${channel}`);
+        request.onload = () => {
+            const resp = JSON.parse(request.responseText);
+            console.log(resp);
+            resp.forEach(add_massege);        
+        };
+        request.send();
+        // $.getJSON(`/get_masseges?channel=${channel}`, function(resp){
+        //     if (resp.channel == 'bad') {                 
+        //             localStorage.removeItem("channel");                           
+        //     } else {                                  
+        //         for (msg in resp){                                       
+        //             const li = document.createElement('li');                 
+        //             li.innerHTML = `<b>${resp[msg].nick}: </b><span class="small text-muted">(${resp[msg].date})</span><p>${resp[msg].text}</p>`;
+        //             document.querySelector('#masseges').prepend(li);                
+        //         }
+        //     }
+        // });
     });
     // Submiting massege via "submit" button 
     document.querySelector('#submitButton').onclick = () => {                

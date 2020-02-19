@@ -120,5 +120,5 @@ def massege(data):
     print(user_massege) 
     room = data["channel"]           
     emit("show_massege", 
-        {"nick": user_massege.name, "massege": user_massege.write, "date": user_massege.date}, room=room)
+        {"nick": user_massege.name, "massege": user_massege.text, "date": user_massege.date}, room=room)
 

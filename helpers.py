@@ -33,10 +33,10 @@ class Masseges():
 
     def __init__(self, name, massege, channel, date):        
         self.name = name
-        self.write = massege
+        self.text = massege
         self.date = date
         self.channel = channel
-        self.massege = {"nick": name, "massege": massege, "date": self.date}                
+        self.massege = {"nick": name, "text": massege, "date": self.date}                
         Masseges.add_new(self.massege, self.channel)         
 
     def __str__(self):
@@ -63,9 +63,4 @@ class User(UserMixin):
         return f"User: {self.name}"
 
 
-def add_massege(massege, list):
-    if len(list) > 100:
-        list.pop([0])
-    list.append(massege)
-    return 0
     
