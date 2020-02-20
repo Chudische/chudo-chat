@@ -11,13 +11,16 @@
             <b>{{ nick }}:</b> <span class="small text-muted">({{ date }})</span>            
         </div>
         <div class="buttons">
-            <button class="btn btn-outline-secondary close-btn">Answer</button> 
-        <button class="btn btn-outline-secondary close-btn">Delete</button> 
+            {{#if owner}}
+            <button class="btn btn-outline-secondary close-btn">Delete</button>
+            {{else}} 
+            <button class="btn btn-outline-secondary answer-btn">Answer</button>
+            {{/if}} 
         </div>
         
         <div class="massege-body">
-            <p>{{ text }}</p>
-              
+            <span class="quotes">{{quote}}</span>
+            <p>{{ text }}</p>              
         </div> 
         
     </div>

@@ -46,7 +46,10 @@ li {
     position: absolute;
     right: 5px;
     bottom: 5px;
-    margin-left: 5px;
+    margin-left: 5px;    
+}
+.massege button {
+    padding: 2px 5px;
 }
 
 textarea {
@@ -57,15 +60,11 @@ textarea {
     display: none;
 }
 
-.fixed-input {
-    position: fixed;
-    bottom: 0;
-    right: 10px;
-    left: 10px;
+.fixed-input {    
     margin: 10px, 15px;
 }
 
-.wrapper{  
-    display: block;  
-    max-height: 65vh; 
+.quote {
+    font-size: 10px;
+    text-decoration: underline;
 }

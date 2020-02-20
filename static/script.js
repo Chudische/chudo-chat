@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const template = Handlebars.compile(document.querySelector("#chat-massege").innerHTML)
 
     function add_massege(data){
+        if (data.nick == user) {
+            data.owner = true;            
+        } else {
+            data.owner = false;
+        } 
         const massege = template(data);
         document.querySelector("#new-masseges").innerHTML += massege;
 
@@ -21,22 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const request = new XMLHttpRequest();
         request.open("GET", `/get_masseges?channel=${channel}`);
         request.onload = () => {
-            const resp = JSON.parse(request.responseText);
-            console.log(resp);
+            const resp = JSON.parse(request.responseText);            
             resp.forEach(add_massege);        
         };
         request.send();
-        // $.getJSON(`/get_masseges?channel=${channel}`, function(resp){
-        //     if (resp.channel == 'bad') {                 
-        //             localStorage.removeItem("channel");                           
-        //     } else {                                  
-        //         for (msg in resp){                                       
-        //             const li = document.createElement('li');                 
-        //             li.innerHTML = `<b>${resp[msg].nick}: </b><span class="small text-muted">(${resp[msg].date})</span><p>${resp[msg].text}</p>`;
-        //             document.querySelector('#masseges').prepend(li);                
-        //         }
-        //     }
-        // });
+        
     });
     // Submiting massege via "submit" button 
     document.querySelector('#submitButton').onclick = () => {                
@@ -58,27 +52,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // On connect to channel clear the  masseges from previous room and add masseges from new room
-    $('#connectButton').on("click", function (){
-        socket.emit('leave', {nickname: user, room: channel});
-        channel = $("#selectChannels").val();
-        let data = {room: channel, nickname: user};            
-        localStorage.setItem('channel', channel);            
-        socket.emit('join', data);
-        $("#masseges").find("li").remove();
-        $.getJSON(`/get_masseges?channel=${channel}`, function(resp){
-            // console.log(resp)       
-            for (msg in resp){                             
-                    const li = document.createElement('li');
-                    li.innerHTML = `<b>${resp[msg].nick}: </b><span class="small text-muted">(${resp[msg].date})</span><p>${resp[msg].massege}</p>`;
-                    document.querySelector('#masseges').prepend(li);              
-            }           
-        });
+    document.addEventListener("click", function(event){
+        const button = event.target;
+        const block = button.parentElement.parentElement;       
+        if (button.id === "connectButton"){
+            console.log("connect pressed!")
+            socket.emit('leave', {nickname: user, room: channel});
+            channel = document.querySelector("#selectChannels").value;
+            let data = {room: channel, nickname: user};            
+            localStorage.setItem('channel', channel);            
+            socket.emit('join', data);
+            document.querySelectorAll(".massege").remove()
+            const request = new XMLHttpRequest();
+            request.open("GET", `/get_masseges?channel=${channel}`);
+            request.onload = () => {
+                const resp = JSON.parse(request.responseText);                
+                resp.forEach(add_massege);        
+            };
+            request.send();
+        } else if (button.id === "createButton"){
+            $('#createChannelModal').modal("show");
+            $("#createChannel").focus();
+        } else if (button.classList.contains("close-btn")){
+            block.remove();
+        } else if (button.classList.contains("answer-btn")){
+            span = document.createElement("span")
+            span.className = "quote"
+            span.innerHTML = block.querySelector("p").innerHTML
+            document.querySelector("textarea").value = span
+        }
+
     });
 
-    $('#createButton').on('click', function (){
-        $('#createChannelModal').modal("show");
-        $("#createChannel").focus();
-    });
     var allowCreate = false;
     $('#createForm').on('submit', function (e) {
         new_channel = $("#createChannel").val();
@@ -105,15 +110,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     socket.on("show_massege", data => {
-        const li = document.createElement('li');
+        const div = document.createElement('div');
+        div.className = "massege";        
         if (data.join) {
-            li.innerHTML = `<b>${data.nick}</b> has joined the channel`
+            div.innerHTML = `<b>${data.nick}</b> has joined the channel`;
+            document.querySelector('#new-masseges').append(div);
         } else if (data.leave){
-            li.innerHTML = `<b>${data.nick}</b> has left the channel`
-        } else {        
-            li.innerHTML = `<b>${data.nick}: </b><span class="small text-muted">(${data.date})</span><p>${data.massege}</p>`;
+            div.innerHTML = `<b>${data.nick}</b> has left the channel`;
+            document.querySelector('#new-masseges').append(div);
+        } else {                               
+            add_massege(data);
         }
-        document.querySelector('#masseges').prepend(li);
+        
     });    
 
     socket.on("create_room", data => {       
