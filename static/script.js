@@ -75,11 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
             $("#createChannel").focus();
         } else if (button.classList.contains("close-btn")){
             block.remove();
-        } else if (button.classList.contains("answer-btn")){
-            span = document.createElement("span")
-            span.className = "quote"
-            span.innerHTML = block.querySelector("p").innerHTML
-            document.querySelector("textarea").value = span
+        } else if (button.classList.contains("answer-btn")){ 
+            document.querySelector("#inputMassege").innerHTML= `\t ${block.querySelector("p").innerHTML} \n`
         }
 
     });
@@ -121,7 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {                               
             add_massege(data);
         }
-        
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - document.body.offsetHeight * 0.1){
+        window.scrollTo(0, document.body.offsetHeight - window.innerHeight);
+        }
+         
     });    
 
     socket.on("create_room", data => {       
