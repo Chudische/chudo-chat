@@ -31,12 +31,13 @@ class Masseges():
         channel.append(massege)
         
 
-    def __init__(self, name, massege, channel, date):        
+    def __init__(self, name, massege, channel, date, quote):        
         self.name = name
         self.text = massege
         self.date = date
         self.channel = channel
-        self.massege = {"nick": name, "text": massege, "date": self.date}                
+        self.quote = quote
+        self.massege = {"nick": name, "text": massege, "date": self.date, "quote": self.quote}                
         Masseges.add_new(self.massege, self.channel)         
 
     def __str__(self):

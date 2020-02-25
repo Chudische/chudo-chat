@@ -8,16 +8,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const template = Handlebars.compile(document.querySelector("#chat-massege").innerHTML)
 
-    function add_massege(data){
+    var quote = false
+
+    function add_massege(data){        
         if (data.nick == user) {
             data.owner = true;            
         } else {
             data.owner = false;
-        } 
+        }
+        if (data.quote == false){
+            delete data.quote;
+        }        
         const massege = template(data);
         document.querySelector("#new-masseges").innerHTML += massege;
 
     };
+    function send() {
+        let textarea = document.querySelector("textarea");       
+        socket.emit('massege', {'massege': textarea.value, 'user': user, channel: channel, quote: quote});
+        textarea.value = '';        
+        if (document.querySelector('#answer').style.display === 'block'){
+            $("#answer").fadeOut(300);
+        }
+        textarea.focus();
+        quote = false;                         
+        
+    }
+
     // On connect join the latest room(that user was in) or default room 
     socket.on('connect', function (){        
         let data = {room: channel, nickname: user};                   
@@ -34,35 +51,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     // Submiting massege via "submit" button 
     document.querySelector('#submitButton').onclick = () => {                
-        let massege = document.querySelector("textarea").value;           
-        socket.emit('massege', {'massege': massege, 'user': user, channel: channel});
-        document.querySelector("textarea").value = '';
-        document.querySelector("textarea").focus();                         
+        send();
         return false;
     };
 
     // Submiting massege by hiting the "Enter" key (shift+Enter - line break)
     $("#inputMassege").keypress(function(event){       
         if (event.which == 13 && !event.shiftKey){
-            let massege = document.querySelector("textarea").value;           
-            socket.emit('massege', {'massege': massege, 'user': user, channel: channel});
-            document.querySelector("textarea").value = '';
-            return false;              
-        }        
+            send();
+            return false;           
+        }
+               
     });
 
     // On connect to channel clear the  masseges from previous room and add masseges from new room
     document.addEventListener("click", function(event){
         const button = event.target;
         const block = button.parentElement.parentElement;       
-        if (button.id === "connectButton"){
-            console.log("connect pressed!")
+        if (button.id === "connectButton"){            
             socket.emit('leave', {nickname: user, room: channel});
             channel = document.querySelector("#selectChannels").value;
             let data = {room: channel, nickname: user};            
             localStorage.setItem('channel', channel);            
             socket.emit('join', data);
-            document.querySelectorAll(".massege").remove()
+            $(".massege").remove();            
             const request = new XMLHttpRequest();
             request.open("GET", `/get_masseges?channel=${channel}`);
             request.onload = () => {
@@ -75,8 +87,15 @@ document.addEventListener('DOMContentLoaded', () => {
             $("#createChannel").focus();
         } else if (button.classList.contains("close-btn")){
             block.remove();
-        } else if (button.classList.contains("answer-btn")){ 
-            document.querySelector("#inputMassege").innerHTML= `\t ${block.querySelector("p").innerHTML} \n`
+        } else if (button.classList.contains("answer-btn")){
+            window.scrollTo(0, document.body.offsetHeight - window.innerHeight); 
+            quote = `${block.querySelector("b").innerHTML} ${block.querySelector("p").innerHTML}` 
+            document.querySelector("#answer-text").innerHTML = `<b>Answer</b> => ${quote}`
+            $("#answer").fadeIn(300);
+            document.querySelector("textarea").focus();                   
+        } else if (button.classList.contains("cancel-btn")){
+            quote = false;
+            $("#answer").fadeOut(300);
         }
 
     });
@@ -115,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (data.leave){
             div.innerHTML = `<b>${data.nick}</b> has left the channel`;
             document.querySelector('#new-masseges').append(div);
-        } else {                               
+        } else {                                         
             add_massege(data);
         }
         if (window.innerHeight + window.scrollY >= document.body.offsetHeight - document.body.offsetHeight * 0.1){

@@ -47,13 +47,6 @@ def index():
         return render_template("index.html", channels_list=channels_list)
 
 
-@app.route("/channel")
-def channel():
-    channel = request.args.get("channel")
-    channel_masseges = masseges[channel]
-    return jsonify(channel_masseges)
-
-
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
@@ -112,13 +105,17 @@ def leave(data):
     leave_room(room)
     emit("show_massege", {"nick": nickname, "leave": "true"}, room=room)
 
+@socketio.on("delete")
+def delete(data):
+    
+
 
 @socketio.on("massege")
 def massege(data):       
     date = datetime.now().strftime('%d.%m.%Y %H:%M')    
-    user_massege = Masseges(data["user"], data["massege"], data["channel"], date)
+    user_massege = Masseges(data["user"], data["massege"], data["channel"], date, data["quote"])
     print(user_massege) 
     room = data["channel"]           
     emit("show_massege", 
-        {"nick": user_massege.name, "text": user_massege.text, "date": user_massege.date}, room=room)
+        {"nick": user_massege.name, "text": user_massege.text, "date": user_massege.date, "quote": user_massege.quote}, room=room)
 

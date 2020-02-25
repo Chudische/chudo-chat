@@ -12,14 +12,14 @@
         </div>
         <div class="buttons">
             {{#if owner}}
-            <button class="btn btn-outline-secondary close-btn">Delete</button>
+            <button class="btn btn-outline-dark close-btn">Delete</button>
             {{else}} 
-            <button class="btn btn-outline-secondary answer-btn">Answer</button>
+            <button class="btn btn-outline-info answer-btn">Answer</button>
             {{/if}} 
         </div>
         
         <div class="massege-body">
-            <span id="quote" class="small text-muted quote">{{quote}}</span>
+            <span id="quote" class="quote">{{ quote }}</span>
             <p>{{ text }}</p>              
         </div> 
         
@@ -76,14 +76,19 @@ main
                     {% endfor %}
                 </select>
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" id="connectButton" type="button">Connect</button>
-                    <button class="btn btn-outline-secondary" id="createButton" type="button">Create</button>
+                    <button class="btn btn-outline-success" id="connectButton" type="button">Connect</button>
+                    <button class="btn btn-outline-success" id="createButton" type="button">Create</button>
                 </div>
+            </div>
+            .
+            <div class="massege answer" id="answer">
+                <span id="answer-text"></span>
+                <button type="button" class="btn btn-outline-secondary cancel-btn buttons">Cancel</button>
             </div>
             <div class='mb-3'>                         
                 <textarea name="inputMassege" id="inputMassege" rows="3"></textarea>
                 <br>
-                <button type="submit" id="submitButton" class="btn btn-outline-secondary btn-block">Submit</button>        
+                <button type="submit" id="submitButton" class="btn btn-outline-primary btn-block">Submit</button>        
             </div>
     </div>  
 

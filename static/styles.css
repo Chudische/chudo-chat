@@ -64,7 +64,16 @@ textarea {
     margin: 10px, 15px;
 }
 
+.answer {
+    display: none;
+    font-style: italic;
+}
+
 .quote {
-    font-size: 10px;
+    display: block;
+    padding-left: 20px;
+    padding-right: 50px;
+    background-color: lightgrey;
     text-decoration: underline;
+    font-style: italic;
 }
