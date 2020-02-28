@@ -5,14 +5,14 @@
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <script id="chat-massege" type="text/x-handlebars-template">
     {% raw -%}
-    <div class="massege">
+    <div class="massege" id="{{id}}">
         
         <div class="massege-title">         
             <b>{{ nick }}:</b> <span class="small text-muted">({{ date }})</span>            
         </div>
         <div class="buttons">
             {{#if owner}}
-            <button class="btn btn-outline-dark close-btn">Delete</button>
+            <button class="btn btn-outline-dark close-btn" data-id="{{id}}">Delete</button>
             {{else}} 
             <button class="btn btn-outline-info answer-btn">Answer</button>
             {{/if}} 
@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block title %}
-main
+
 {% endblock %}
 
 {% block main %}
@@ -80,10 +80,10 @@ main
                     <button class="btn btn-outline-success" id="createButton" type="button">Create</button>
                 </div>
             </div>
-            .
-            <div class="massege answer" id="answer">
+            
+            <div class="answer" id="answer">
                 <span id="answer-text"></span>
-                <button type="button" class="btn btn-outline-secondary cancel-btn buttons">Cancel</button>
+                <button type="button" class="btn btn-outline-secondary cancel-btn">Cancel</button>
             </div>
             <div class='mb-3'>                         
                 <textarea name="inputMassege" id="inputMassege" rows="3"></textarea>

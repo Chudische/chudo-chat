@@ -47,6 +47,11 @@ def index():
         return render_template("index.html", channels_list=channels_list)
 
 
+@app.route("/<channel>")
+def index_redirect(channel):
+    return redirect("/")
+
+
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
@@ -76,7 +81,6 @@ def get_masseges():
     try:
         channel_masseges = masseges[channel]
     except KeyError:
-        print(f"\n Channel: {channel} not found \n")
         return jsonify({"channel": "bad"})        
     
     return jsonify(channel_masseges)
@@ -105,10 +109,15 @@ def leave(data):
     leave_room(room)
     emit("show_massege", {"nick": nickname, "leave": "true"}, room=room)
 
+
 @socketio.on("delete")
 def delete(data):
-    
-
+    room = data["channel"]    
+    for index, post in enumerate(masseges[room]):
+        if post["id"] == int(data["id"]):            
+            masseges[room].pop(index)
+    emit("delete", {"nick": data["user"], "id": data["id"]}, room=room)
+      
 
 @socketio.on("massege")
 def massege(data):       
@@ -117,5 +126,5 @@ def massege(data):
     print(user_massege) 
     room = data["channel"]           
     emit("show_massege", 
-        {"nick": user_massege.name, "text": user_massege.text, "date": user_massege.date, "quote": user_massege.quote}, room=room)
+        {"nick": user_massege.name, "text": user_massege.text, "date": user_massege.date, "quote": user_massege.quote, "id": user_massege.id}, room=room)
 

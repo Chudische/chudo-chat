@@ -20,6 +20,7 @@ def login_required(f):
 class Masseges():
     """User massege with fields name and massege"""    
     channels = {}
+    massege_id = 0
     
     @classmethod
     def add_new(cls, massege, channel):
@@ -31,13 +32,15 @@ class Masseges():
         channel.append(massege)
         
 
-    def __init__(self, name, massege, channel, date, quote):        
+    def __init__(self, name, massege, channel, date, quote):
+        self.id = Masseges.massege_id 
+        Masseges.massege_id += 1
         self.name = name
         self.text = massege
         self.date = date
         self.channel = channel
         self.quote = quote
-        self.massege = {"nick": name, "text": massege, "date": self.date, "quote": self.quote}                
+        self.massege = {"nick": name, "text": massege, "date": self.date, "quote": self.quote, "id": self.id}                
         Masseges.add_new(self.massege, self.channel)         
 
     def __str__(self):

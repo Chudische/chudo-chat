@@ -23,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector("#new-masseges").innerHTML += massege;
 
     };
-    function send() {
+
+
+    function sendMassege() {
         let textarea = document.querySelector("textarea");       
         socket.emit('massege', {'massege': textarea.value, 'user': user, channel: channel, quote: quote});
         textarea.value = '';        
@@ -44,21 +46,33 @@ document.addEventListener('DOMContentLoaded', () => {
         request.open("GET", `/get_masseges?channel=${channel}`);
         request.onload = () => {
             const resp = JSON.parse(request.responseText);            
-            resp.forEach(add_massege);        
+            resp.forEach(add_massege);
+            
+            document.title += channel;
+            history.pushState({"title": document.title, "channel": channel}, channel, channel);
         };
         request.send();
         
     });
+
+    window.onpopstate = e => {
+        const data = e.state;
+        document.title = data.title;
+        socket.emit('leave', {nickname: user, room: channel});
+        channel = data.channel;
+        socket.emit('join', {nickname: user, room: channel});
+
+    }
     // Submiting massege via "submit" button 
     document.querySelector('#submitButton').onclick = () => {                
-        send();
+        sendMassege();
         return false;
     };
 
     // Submiting massege by hiting the "Enter" key (shift+Enter - line break)
     $("#inputMassege").keypress(function(event){       
         if (event.which == 13 && !event.shiftKey){
-            send();
+            sendMassege();
             return false;           
         }
                
@@ -79,18 +93,22 @@ document.addEventListener('DOMContentLoaded', () => {
             request.open("GET", `/get_masseges?channel=${channel}`);
             request.onload = () => {
                 const resp = JSON.parse(request.responseText);                
-                resp.forEach(add_massege);        
+                resp.forEach(add_massege);
+                document.title += channel;
+                history.pushState({"title": document.title, "channel": channel}, channel, channel);        
             };
             request.send();
         } else if (button.id === "createButton"){
             $('#createChannelModal').modal("show");
             $("#createChannel").focus();
         } else if (button.classList.contains("close-btn")){
-            block.remove();
+            let id = button.dataset.id;            
+            socket.emit("delete", {user: user, id: id, channel: channel});                    
+            
         } else if (button.classList.contains("answer-btn")){
             window.scrollTo(0, document.body.offsetHeight - window.innerHeight); 
             quote = `${block.querySelector("b").innerHTML} ${block.querySelector("p").innerHTML}` 
-            document.querySelector("#answer-text").innerHTML = `<b>Answer</b> => ${quote}`
+            document.querySelector("#answer-text").innerHTML = `<b>Answer to </b>  ${quote}`
             $("#answer").fadeIn(300);
             document.querySelector("textarea").focus();                   
         } else if (button.classList.contains("cancel-btn")){
@@ -99,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
     });
-
+    // Create new channel
     var allowCreate = false;
     $('#createForm').on('submit', function (e) {
         new_channel = $("#createChannel").val();
@@ -149,4 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
         option.value = `${data.room}`;        
         document.querySelector("#selectChannels").appendChild(option);
     });
+
+    socket.on("delete", data => {
+        let id = `#${data.id}`;
+        let text = `<b>${data.nick}</b> deleted his massege`
+        $(id).fadeOut(300, function(){$(id).html(text)}).fadeIn(300);
+        
+    })
 });
