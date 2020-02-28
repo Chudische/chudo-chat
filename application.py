@@ -89,16 +89,14 @@ def get_masseges():
 @socketio.on("join")
 def join(data):   
     nickname = data["nickname"]
-    room = data["room"]
-    print('User {} has connected to {}'.format(nickname, room))
+    room = data["room"]    
     join_room(room)
     emit("show_massege", {"nick": nickname, "join": "true"}, room=room )
 
 
 @socketio.on("create_room")
 def create(data):
-    room = data["room"]
-    print(f"\n New room was created room: {room}\n")
+    room = data["room"]    
     emit("create_room", {"room": room}, broadcast=True)
 
 
@@ -122,8 +120,7 @@ def delete(data):
 @socketio.on("massege")
 def massege(data):       
     date = datetime.now().strftime('%d.%m.%Y %H:%M')    
-    user_massege = Masseges(data["user"], data["massege"], data["channel"], date, data["quote"])
-    print(user_massege) 
+    user_massege = Masseges(data["user"], data["massege"], data["channel"], date, data["quote"])    
     room = data["channel"]           
     emit("show_massege", 
         {"nick": user_massege.name, "text": user_massege.text, "date": user_massege.date, "quote": user_massege.quote, "id": user_massege.id}, room=room)
