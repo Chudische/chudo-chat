@@ -33,6 +33,7 @@ users = User.user_db
 @app.route("/", methods=["POST", "GET"])
 @login_required
 def index():
+    """Main page"""
     if request.method == "POST":
         channel = request.form.get("channel") 
         if not channel:
@@ -49,11 +50,13 @@ def index():
 
 @app.route("/<channel>")
 def index_redirect(channel):
+    """Redirect to index if user update page or close browser"""
     return redirect("/")
 
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
+    """Login page"""
     if request.method == "POST":
         if not request.form.get("nickname"):
             flash("Nickname is required")
@@ -77,6 +80,7 @@ def check_user():
 
 @app.route("/get_masseges")
 def get_masseges():
+    """Get masseges from channel"""
     channel = request.args.get("channel")
     try:
         channel_masseges = masseges[channel]

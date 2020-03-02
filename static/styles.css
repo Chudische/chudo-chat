@@ -22,17 +22,6 @@ main img
     max-width: 100%;
 }
 
-ul {
-    list-style: none;
-    text-align: left;
-}
-li {
-    border: 1px solid grey;
-    border-radius: 5px;
-    margin-top: 5px;
-    padding: 5px;
-}
-
 .massege, .answer {
     position: relative;;
     border: 1px solid grey;
@@ -48,7 +37,7 @@ li {
     bottom: 5px;
     margin-left: 5px;    
 }
-.massege button {
+.massege button, .cancel-btn {
     padding: 2px 5px;
 }
 

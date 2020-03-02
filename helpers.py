@@ -18,7 +18,7 @@ def login_required(f):
 
 
 class Masseges():
-    """User massege with fields name and massege"""    
+    """User masseges class with local database and massege counter"""    
     channels = {}
     massege_id = 0
     
