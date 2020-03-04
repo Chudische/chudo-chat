@@ -6,7 +6,7 @@ from helpers import Masseges, User, login_required
 from dotenv import load_dotenv
 from datetime import datetime
 
-
+# Load secret key from dotenv file
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)

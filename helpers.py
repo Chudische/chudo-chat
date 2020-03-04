@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import request, redirect, session
 from flask_login import UserMixin
-from flask_socketio import disconnect
+
 
 def login_required(f):
     """
