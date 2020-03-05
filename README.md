@@ -23,6 +23,6 @@ login_required decorator.
 
 ## Futures
 
-1. Supporting deleting users one’s own messages. When user delete own's massege, a massege changes to "<user> deleted his massege"
+1. Supporting deleting users one’s own messages. When user delete own's massege, a massege changes to "\<user\> deleted his massege"
 2. Supporting anwering to the direct user massege. Answer appear with user quotes. 
 
